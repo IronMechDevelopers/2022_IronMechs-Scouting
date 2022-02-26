@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping( "/api" )
 @AllArgsConstructor
 @Slf4j
 public
@@ -22,23 +22,27 @@ class AliveController {
     @Autowired
     BuildProperties buildProperties;
 
-    @GetMapping("/alive")
+    @GetMapping( "/alive" )
     public
     ResponseEntity<String> alive() {
         log.info("Alive");
         return ResponseEntity.status(HttpStatus.OK).body("alive");
     }
 
-    @GetMapping("/version")
+    @GetMapping( "/version" )
     public
     ResponseEntity<HashMap<String, String>> version() {
 
         HashMap<String, String> info = new HashMap<>();
-        info.put("version", buildProperties.getVersion());
-        info.put("time", buildProperties.getTime().toString());
+        info.put("version",
+                 buildProperties.getVersion());
+        info.put("time",
+                 buildProperties.getTime().toString());
 
-        log.info("version - {}.", info.get("version"));
-        log.info("time - {}.", info.get("time"));
+        log.info("version - {}.",
+                 info.get("version"));
+        log.info("time - {}.",
+                 info.get("time"));
         return ResponseEntity.status(HttpStatus.OK).body(info);
     }
 }

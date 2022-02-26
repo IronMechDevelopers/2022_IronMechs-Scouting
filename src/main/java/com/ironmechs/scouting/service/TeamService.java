@@ -54,13 +54,17 @@ class TeamService {
     public
     TeamDto save(TeamDto _team) {
         log.info("save single team");
-        log.trace("teamDto: {}.", _team);
+        log.trace("teamDto: {}.",
+                  _team);
         Team team = teamMapper.teamDtoToTeam(_team);
-        log.trace("team: {}.", team);
+        log.trace("team: {}.",
+                  team);
         Team response = repository.save(team);
-        log.trace("response: {}.", response);
+        log.trace("response: {}.",
+                  response);
         TeamDto team_ = teamMapper.teamToTeamDto(response);
-        log.trace("team_: {}.", team_);
+        log.trace("team_: {}.",
+                  team_);
         return team_;
     }
 }

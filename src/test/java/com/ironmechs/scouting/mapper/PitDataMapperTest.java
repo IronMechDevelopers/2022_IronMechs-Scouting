@@ -13,7 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith( MockitoExtension.class )
@@ -138,18 +140,12 @@ class PitDataMapperTest {
                      pitData.getHeight());
         assertEquals("12.5x16",
                      pitData.getDimensions());
-        assertEquals(false,
-                     pitData.isMultipleDriveTeams());
-        assertEquals(false,
-                     pitData.isCanClimbHigh());
-        assertEquals(true,
-                     pitData.isCanClimbMiddle());
-        assertEquals(false,
-                     pitData.isCanShootHigh());
-        assertEquals(false,
-                     pitData.isCanClimbTraversal());
-        assertEquals(true,
-                     pitData.isCanShootLow());
+        assertFalse(pitData.isMultipleDriveTeams());
+        assertFalse(pitData.isCanClimbHigh());
+        assertTrue(pitData.isCanClimbMiddle());
+        assertFalse(pitData.isCanShootHigh());
+        assertFalse(pitData.isCanClimbTraversal());
+        assertTrue(pitData.isCanShootLow());
         assertEquals(2,
                      pitData.getHoldingCapacity());
     }
@@ -172,22 +168,6 @@ class PitDataMapperTest {
                 .holdingCapacity(2)
                 .build();
 
-        Team team = Team
-                .builder()
-                .id(UUID.randomUUID().toString())
-                .key("frc5684")
-                .teamNumber(5684)
-                .nickname("Iron Mech")
-                .name("Lockheed Martin/2015 FRC Rookie Grant/Picatinny Arsenal/Mission Solutions LLC/Tuchman Foundation&Trenton Catholic Academy-Upper")
-                .school_name("Trenton Catholic Academy-Upper")
-                .city("Trenton")
-                .state_prov("New Jersey")
-                .country("USA")
-                .postal_code("08610")
-                .website("https://trentoncatholic.org/robotics")
-                .rookie_year(2015)
-                .build();
-
         PitData pitData = mapper.pitDataDtoToPitData(pitDataDto);
 
         assertNull(pitData.getTeam());
@@ -195,20 +175,13 @@ class PitDataMapperTest {
                      pitData.getHeight());
         assertEquals("12.5x16",
                      pitData.getDimensions());
-        assertEquals(false,
-                     pitData.isMultipleDriveTeams());
-        assertEquals(false,
-                     pitData.isCanClimbHigh());
-        assertEquals(false,
-                     pitData.isCanClimbHigh());
-        assertEquals(true,
-                     pitData.isCanClimbMiddle());
-        assertEquals(false,
-                     pitData.isCanShootHigh());
-        assertEquals(false,
-                     pitData.isCanClimbTraversal());
-        assertEquals(true,
-                     pitData.isCanShootLow());
+        assertFalse(pitData.isMultipleDriveTeams());
+        assertFalse(pitData.isCanClimbHigh());
+        assertFalse(pitData.isCanClimbHigh());
+        assertTrue(pitData.isCanClimbMiddle());
+        assertFalse(pitData.isCanShootHigh());
+        assertFalse(pitData.isCanClimbTraversal());
+        assertTrue(pitData.isCanShootLow());
         assertEquals(2,
                      pitData.getHoldingCapacity());
     }
@@ -238,20 +211,13 @@ class PitDataMapperTest {
                      pitData.getHeight());
         assertEquals("12.5x16",
                      pitData.getDimensions());
-        assertEquals(false,
-                     pitData.isMultipleDriveTeams());
-        assertEquals(false,
-                     pitData.isCanClimbHigh());
-        assertEquals(false,
-                     pitData.isCanClimbHigh());
-        assertEquals(true,
-                     pitData.isCanClimbMiddle());
-        assertEquals(false,
-                     pitData.isCanShootHigh());
-        assertEquals(false,
-                     pitData.isCanClimbTraversal());
-        assertEquals(true,
-                     pitData.isCanShootLow());
+        assertFalse(pitData.isMultipleDriveTeams());
+        assertFalse(pitData.isCanClimbHigh());
+        assertFalse(pitData.isCanClimbHigh());
+        assertTrue(pitData.isCanClimbMiddle());
+        assertFalse(pitData.isCanShootHigh());
+        assertFalse(pitData.isCanClimbTraversal());
+        assertTrue(pitData.isCanShootLow());
         assertEquals(2,
                      pitData.getHoldingCapacity());
     }
@@ -332,20 +298,13 @@ class PitDataMapperTest {
                      pitData.getHeight());
         assertEquals("158",
                      pitData.getDimensions());
-        assertEquals(true,
-                     pitData.isMultipleDriveTeams());
-        assertEquals(true,
-                     pitData.isCanClimbHigh());
-        assertEquals(true,
-                     pitData.isCanClimbHigh());
-        assertEquals(false,
-                     pitData.isCanClimbMiddle());
-        assertEquals(true,
-                     pitData.isCanShootHigh());
-        assertEquals(true,
-                     pitData.isCanClimbTraversal());
-        assertEquals(false,
-                     pitData.isCanShootLow());
+        assertTrue(pitData.isMultipleDriveTeams());
+        assertTrue(pitData.isCanClimbHigh());
+        assertTrue(pitData.isCanClimbHigh());
+        assertFalse(pitData.isCanClimbMiddle());
+        assertTrue(pitData.isCanShootHigh());
+        assertTrue(pitData.isCanClimbTraversal());
+        assertFalse(pitData.isCanShootLow());
         assertEquals(1,
                      pitData.getHoldingCapacity());
     }
