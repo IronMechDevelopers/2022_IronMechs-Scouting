@@ -14,9 +14,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -76,6 +78,8 @@ class Team {
     @Schema( description = "First year the team officially competed.",
              example = "2015" )
     private int rookie_year;
+    @OneToMany( mappedBy = "team" )
+    private Collection<PitData> pitData;
 
     @PrePersist
     protected

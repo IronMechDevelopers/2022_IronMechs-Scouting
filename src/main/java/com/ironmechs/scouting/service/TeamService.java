@@ -25,7 +25,7 @@ class TeamService {
     @Autowired
     TeamMapper teamMapper;
 
-    @Transactional(readOnly = true)
+    @Transactional( readOnly = true )
     public
     List<TeamDto> getAll() {
         log.info("get all teams");
@@ -33,14 +33,24 @@ class TeamService {
         return allTeams.stream().map(t -> teamMapper.teamToTeamDto(t)).collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional( readOnly = true )
+    public
+    Team findByIdTeamNumber(int teamNumber) {
+        log.info("getByTeamNumber {}.",
+                 teamNumber);
+        return repository.findByTeamNumber(teamNumber).orElse(null);
+    }
+
+    @Transactional( readOnly = true )
     public
     Optional<TeamDto> getByTeamNumber(int teamNumber) {
-        log.info("getByTeamNumber {}.", teamNumber);
+        log.info("getByTeamNumber {}.",
+                 teamNumber);
         Optional<Team> team = repository.findByTeamNumber(teamNumber);
         return team.map(value -> teamMapper.teamToTeamDto(value));
     }
 
+    @Transactional()
     public
     TeamDto save(TeamDto _team) {
         log.info("save single team");

@@ -11,14 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
-import static org.springframework.http.ResponseEntity.*;
+import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping( "/api/team" )
@@ -47,17 +49,39 @@ class TeamController {
         }
     }
 
+    @GetMapping( "/teamNumber/{teamNumber}" )
+    public
+    ResponseEntity<?> findTeamByNumber(
+            @PathVariable( "teamNumber" )
+                    int teamNumber)
+    {
+        log.info("Getting data for team {}",
+                 teamNumber);
+        try {
+            Optional<TeamDto> team = service.getByTeamNumber(teamNumber);
+            if (team.isPresent()) {
+                return status(HttpStatus.OK).body(team.get());
+            }
+            return status(HttpStatus.NO_CONTENT).body(null);
+        } catch (Exception e) {
+            log.error("Error in findTeamByNumber.",
+                      e);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @PostMapping( "/" )
     public
     ResponseEntity<?> createTeam(
-            @RequestBody( description = "Basic information about the SPAH that is going to be added.",
+            @RequestBody( description = "FRC team information.",
                           required = true,
                           content = @Content( schema = @Schema( implementation = TeamDto.class ) ) )
             @Valid
             @org.springframework.web.bind.annotation.RequestBody
                     TeamDto _team)
     {
-        log.info("Making a request to getAllTeams.");
+        log.info("Making a create team {}.",
+                 _team);
         try {
             TeamDto team = service.save(_team);
             return status(HttpStatus.CREATED).body(team);

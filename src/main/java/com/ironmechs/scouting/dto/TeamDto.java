@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Data
 @Builder
+@Schema( name = "Team" )
 public
 class TeamDto implements Serializable {
     @Schema( description = "TBA team key with the format frcXXXX with XXXX representing the team number.",
