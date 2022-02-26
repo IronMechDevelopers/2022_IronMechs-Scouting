@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -103,12 +105,65 @@ class PitDataControllerTest {
                 .canClimbTraversal(true)
                 .canShootHigh(true)
                 .canShootLow(false)
-                .holdingCapacity(1)
-                .build();
+                .holdingCapacity(1).build();
 
         when(service.save(pitDataDto)).thenThrow(new NumberFormatException());
 
         ResponseEntity<?> newTeamsResponse = controller.createPitData(pitDataDto);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
+                     newTeamsResponse.getStatusCode());
+        assertNull(newTeamsResponse.getBody());
+    }
+
+    @Test
+    void findTeamByNumber() {
+        PitDataDto pitDataDto = PitDataDto
+                .builder()
+                .teamNumber(2590)
+                .height(100.0)
+                .dimensions("158")
+                .multipleDriveTeams(true)
+                .canClimbLow(false)
+                .canClimbHigh(true)
+                .canClimbMiddle(false)
+                .canClimbTraversal(true)
+                .canShootHigh(true)
+                .canShootLow(false)
+                .holdingCapacity(1)
+                .build();
+        when(service.getNewestPitDataForTeam(5684)).thenReturn(Optional.of(pitDataDto));
+
+
+        ResponseEntity<?> newTeamsResponse = controller.findPitDataByTeamNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.OK,
+                     newTeamsResponse.getStatusCode());
+        Object body = newTeamsResponse.getBody();
+        assertNotNull(body);
+        assertEquals(body,
+                     pitDataDto);
+    }
+
+    @Test
+    void findTeamByNumberNoData() {
+        when(service.getNewestPitDataForTeam(5684)).thenReturn(Optional.empty());
+
+
+        ResponseEntity<?> newTeamsResponse = controller.findPitDataByTeamNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.NO_CONTENT,
+                     newTeamsResponse.getStatusCode());
+        Object body = newTeamsResponse.getBody();
+        assertNull(body);
+    }
+
+    @Test
+    void findTeamByNumberError() {
+
+        when(service.getNewestPitDataForTeam(5684)).thenThrow(new NumberFormatException());
+
+        ResponseEntity<?> newTeamsResponse = controller.findPitDataByTeamNumber(5684);
         assertNotNull(newTeamsResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
                      newTeamsResponse.getStatusCode());

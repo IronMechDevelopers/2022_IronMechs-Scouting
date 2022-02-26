@@ -13,11 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith( MockitoExtension.class )
@@ -144,5 +147,73 @@ class PitDataServiceTest {
         assertEquals("Could not find a team 5684.",
                      response.getMessage());
 
+    }
+
+    @Test
+    void getNewestPitDataForTeamTest() {
+
+        Team team = Team
+                .builder()
+                .id(UUID.randomUUID().toString())
+                .key("frc5684")
+                .teamNumber(5684)
+                .nickname("Iron Mech")
+                .name("Lockheed Martin/2015 FRC Rookie Grant/Picatinny Arsenal/Mission Solutions LLC/Tuchman Foundation&Trenton Catholic Academy-Upper")
+                .school_name("Trenton Catholic Academy-Upper")
+                .city("Trenton")
+                .state_prov("New Jersey")
+                .country("USA")
+                .postal_code("08610")
+                .website("https://trentoncatholic.org/robotics")
+                .rookie_year(2015)
+                .build();
+
+        PitData pitData = PitData
+                .builder()
+                .team(team)
+                .height(60.0)
+                .dimensions("12.5x16")
+                .multipleDriveTeams(false)
+                .canClimbLow(true)
+                .canClimbHigh(false)
+                .canClimbMiddle(true)
+                .canClimbTraversal(false)
+                .canShootHigh(false)
+                .canShootLow(true)
+                .holdingCapacity(2)
+                .build();
+
+        PitDataDto pitDataDto = PitDataDto
+                .builder()
+                .teamNumber(5684)
+                .height(60.0)
+                .dimensions("12.5x16")
+                .multipleDriveTeams(false)
+                .canClimbLow(true)
+                .canClimbHigh(false)
+                .canClimbMiddle(true)
+                .canClimbTraversal(false)
+                .canShootHigh(false)
+                .canShootLow(true)
+                .holdingCapacity(2)
+                .build();
+
+        when(repository.findFirstByTeam_TeamNumberOrderByUpdateDateTimeDesc(5684)).thenReturn(Optional.of(pitData));
+        when(mapper.pitDataToPitDataDto(pitData)).thenReturn(pitDataDto);
+
+        Optional<PitDataDto> response = service.getNewestPitDataForTeam(5684);
+
+        assertTrue(response.isPresent());
+        assertEquals(pitDataDto,
+                     response.get());
+    }
+
+    @Test
+    void getNewestPitDataForTeamNoDataTest() {
+        when(repository.findFirstByTeam_TeamNumberOrderByUpdateDateTimeDesc(5684)).thenReturn(Optional.empty());
+
+        Optional<PitDataDto> response = service.getNewestPitDataForTeam(5684);
+
+        assertFalse(response.isPresent());
     }
 }

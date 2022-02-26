@@ -44,7 +44,7 @@ class PitData {
 
     @ManyToOne( fetch = javax.persistence.FetchType.LAZY,
                 cascade = javax.persistence.CascadeType.ALL )
-    @JoinColumn( name = "team_number" )
+    @JoinColumn( name = "team_id" )
     private Team team;
 
     private double height;

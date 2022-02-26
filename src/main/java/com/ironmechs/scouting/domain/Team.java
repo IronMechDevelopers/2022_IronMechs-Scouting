@@ -13,11 +13,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -30,8 +30,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table( name = "team",
-        uniqueConstraints = {@UniqueConstraint( name = "uc_team_teamnumber",
-                                                columnNames = {"team_Number"} )} )
+        indexes = {@Index( name = "idx_team_teamnumber",
+                           columnList = "teamNumber" )} )
 public
 class Team {
     @JsonIgnore

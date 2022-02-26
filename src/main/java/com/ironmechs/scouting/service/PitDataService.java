@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -44,6 +46,13 @@ class PitDataService {
         log.trace("pitData_: {}.",
                   pitData_);
         return pitData_;
+    }
+
+    @Transactional()
+    public
+    Optional<PitDataDto> getNewestPitDataForTeam(int teamNumber) {
+        Optional<PitData> temp = repository.findFirstByTeam_TeamNumberOrderByUpdateDateTimeDesc(teamNumber);
+        return temp.map(pitData -> mapper.pitDataToPitDataDto(pitData));
     }
 
 }

@@ -11,11 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.status;
 
@@ -51,6 +54,27 @@ class PitDataController {
                                                        _pitData.getTeamNumber());
         } catch (Exception e) {
             log.error("Error in createTeam.",
+                      e);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping( "/teamNumber/{teamNumber}" )
+    public
+    ResponseEntity<?> findPitDataByTeamNumber(
+            @PathVariable( "teamNumber" )
+                    int teamNumber)
+    {
+        log.info("Getting pit data for team {}",
+                 teamNumber);
+        try {
+            Optional<PitDataDto> pitData = service.getNewestPitDataForTeam(teamNumber);
+            if (pitData.isPresent()) {
+                return status(HttpStatus.OK).body(pitData.get());
+            }
+            return status(HttpStatus.NO_CONTENT).body(null);
+        } catch (Exception e) {
+            log.error("Error in findTeamByNumber.",
                       e);
             return status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
