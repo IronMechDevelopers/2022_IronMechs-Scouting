@@ -55,4 +55,9 @@ class PitDataService {
         return temp.map(pitData -> mapper.pitDataToPitDataDto(pitData));
     }
 
+    @Transactional()
+    public
+    long deletePitDataForTeam(int teamNumber) {
+        return repository.deleteByTeam_TeamNumber(teamNumber);
+    }
 }

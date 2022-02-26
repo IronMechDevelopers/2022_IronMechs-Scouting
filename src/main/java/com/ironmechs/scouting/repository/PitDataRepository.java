@@ -11,4 +11,6 @@ interface PitDataRepository extends JpaRepository<PitData, String> {
     List<PitData> findByTeam_TeamNumber(int teamNumber);
 
     Optional<PitData> findFirstByTeam_TeamNumberOrderByUpdateDateTimeDesc(int teamNumber);
+
+    long deleteByTeam_TeamNumber(int teamNumber);
 }

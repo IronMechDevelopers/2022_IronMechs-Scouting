@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,12 +49,12 @@ class PitDataController {
             PitDataDto pitData = service.save(_pitData);
             return status(HttpStatus.CREATED).body(pitData);
         } catch (NoTeamException e) {
-            log.error("Could not save team because of a NoTeamException.",
+            log.error("Could not save pit data because of a NoTeamException.",
                       e);
-            return status(HttpStatus.BAD_REQUEST).body("Could not save team because could not find a team " +
+            return status(HttpStatus.BAD_REQUEST).body("Could not save pit data because could not find a team " +
                                                        _pitData.getTeamNumber());
         } catch (Exception e) {
-            log.error("Error in createTeam.",
+            log.error("Error in createPitData.",
                       e);
             return status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -74,7 +75,31 @@ class PitDataController {
             }
             return status(HttpStatus.NO_CONTENT).body(null);
         } catch (Exception e) {
-            log.error("Error in findTeamByNumber.",
+            log.error("Error in findPitDataByTeamNumber.",
+                      e);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @DeleteMapping( "/teamNumber/{teamNumber}" )
+    public
+    ResponseEntity<?> deletePitDataByTeamNumber(
+            @PathVariable( "teamNumber" )
+                    int teamNumber)
+    {
+        log.info("Deleting pit data for team {}",
+                 teamNumber);
+        try {
+            long deleted = service.deletePitDataForTeam(teamNumber);
+            log.info("Deleted {} pit data for team {}.",
+                     deleted,
+                     teamNumber);
+            if (deleted > 0) {
+                return status(HttpStatus.OK).body(null);
+            }
+            return status(HttpStatus.NO_CONTENT).body(null);
+        } catch (Exception e) {
+            log.error("Error in deletePitDataByTeamNumber.",
                       e);
             return status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

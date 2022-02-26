@@ -54,7 +54,7 @@ class PitDataControllerTest {
                      repsonse.getStatusCode());
         Object body = repsonse.getBody();
         assertNotNull(body);
-        assertEquals("Could not save team because could not find a team 5684",
+        assertEquals("Could not save pit data because could not find a team 5684",
                      body);
     }
 
@@ -164,6 +164,44 @@ class PitDataControllerTest {
         when(service.getNewestPitDataForTeam(5684)).thenThrow(new NumberFormatException());
 
         ResponseEntity<?> newTeamsResponse = controller.findPitDataByTeamNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
+                     newTeamsResponse.getStatusCode());
+        assertNull(newTeamsResponse.getBody());
+    }
+
+    @Test
+    void deletePitDataByTeamNumberTest() {
+        when(service.deletePitDataForTeam(5684)).thenReturn(5L);
+
+
+        ResponseEntity<?> newTeamsResponse = controller.deletePitDataByTeamNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.OK,
+                     newTeamsResponse.getStatusCode());
+        Object body = newTeamsResponse.getBody();
+        assertNull(body);
+    }
+
+    @Test
+    void deletePitDataByTeamNumberNoDeleteTest() {
+        when(service.deletePitDataForTeam(5684)).thenReturn(0L);
+
+
+        ResponseEntity<?> newTeamsResponse = controller.deletePitDataByTeamNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.NO_CONTENT,
+                     newTeamsResponse.getStatusCode());
+        Object body = newTeamsResponse.getBody();
+        assertNull(body);
+    }
+
+    @Test
+    void deletePitDataByTeamNumberError() {
+
+        when(service.deletePitDataForTeam(5684)).thenThrow(new NumberFormatException());
+
+        ResponseEntity<?> newTeamsResponse = controller.deletePitDataByTeamNumber(5684);
         assertNotNull(newTeamsResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
                      newTeamsResponse.getStatusCode());
