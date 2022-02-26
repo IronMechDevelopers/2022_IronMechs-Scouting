@@ -42,8 +42,9 @@ class PitData {
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
 
-    @ManyToOne
-    @JoinColumn( name = "team_id" )
+    @ManyToOne( fetch = javax.persistence.FetchType.LAZY,
+                cascade = javax.persistence.CascadeType.ALL )
+    @JoinColumn( name = "team_number" )
     private Team team;
 
     private double height;

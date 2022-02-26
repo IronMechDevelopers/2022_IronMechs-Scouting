@@ -1,6 +1,7 @@
 package com.ironmechs.scouting.controller;
 
 import com.ironmechs.scouting.dto.PitDataDto;
+import com.ironmechs.scouting.exceptions.NoTeamException;
 import com.ironmechs.scouting.service.PitDataService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,13 +35,20 @@ class PitDataController {
             @RequestBody( description = "FRC pit data to be scouted out at a competition.",
                           required = true,
                           content = @Content( schema = @Schema( implementation = PitDataDto.class ) ) )
-            @Valid PitDataDto _pitData)
+            @Valid
+            @org.springframework.web.bind.annotation.RequestBody
+                    PitDataDto _pitData)
     {
         log.info("Making a create pitData {}.",
                  _pitData);
         try {
             PitDataDto pitData = service.save(_pitData);
             return status(HttpStatus.CREATED).body(pitData);
+        } catch (NoTeamException e) {
+            log.error("Could not save team because of a NoTeamException.",
+                      e);
+            return status(HttpStatus.BAD_REQUEST).body("Could not save team because could not find a team " +
+                                                       _pitData.getTeamNumber());
         } catch (Exception e) {
             log.error("Error in createTeam.",
                       e);

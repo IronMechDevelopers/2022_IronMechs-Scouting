@@ -17,6 +17,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -28,7 +29,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table( name = "team" )
+@Table( name = "team",
+        uniqueConstraints = {@UniqueConstraint( name = "uc_team_teamnumber",
+                                                columnNames = {"team_Number"} )} )
 public
 class Team {
     @JsonIgnore
@@ -78,7 +81,9 @@ class Team {
     @Schema( description = "First year the team officially competed.",
              example = "2015" )
     private int rookie_year;
-    @OneToMany( mappedBy = "team" )
+    @OneToMany( mappedBy = "team",
+                fetch = javax.persistence.FetchType.LAZY,
+                cascade = javax.persistence.CascadeType.ALL )
     private Collection<PitData> pitData;
 
     @PrePersist
