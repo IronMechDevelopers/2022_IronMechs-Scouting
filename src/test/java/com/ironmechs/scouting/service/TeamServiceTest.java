@@ -17,6 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -199,5 +200,43 @@ class TeamServiceTest {
         assertEquals(teamDto,
                      teamDtoResponse);
 
+    }
+
+    @Test
+    void findByIdTeamNumber() {
+        Team team = Team
+                .builder()
+                .id(UUID.randomUUID().toString())
+                .key("frc5684")
+                .teamNumber(5684)
+                .nickname("Iron Mech")
+                .name("Lockheed Martin/2015 FRC Rookie Grant/Picatinny Arsenal/Mission Solutions LLC/Tuchman Foundation&Trenton Catholic Academy-Upper")
+                .school_name("Trenton Catholic Academy-Upper")
+                .city("Trenton")
+                .state_prov("New Jersey")
+                .country("USA")
+                .postal_code("08610")
+                .website("https://trentoncatholic.org/robotics")
+                .rookie_year(2015)
+                .build();
+
+        when(repository.findByTeamNumber(5684)).thenReturn(Optional.of(team));
+
+        Team teamResponse = teamService.findByIdTeamNumber(5684);
+
+
+        assertNotNull(teamResponse);
+        assertEquals(team,
+                     teamResponse);
+    }
+
+    @Test
+    void findByIdTeamNumberNoTeam() {
+        when(repository.findByTeamNumber(5684)).thenReturn(Optional.empty());
+
+        Team teamResponse = teamService.findByIdTeamNumber(5684);
+
+
+        assertNull(teamResponse);
     }
 }

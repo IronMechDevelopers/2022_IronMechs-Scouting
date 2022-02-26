@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -142,6 +143,60 @@ class TeamControllerTest {
         when(service.save(teamDto)).thenThrow(new NumberFormatException());
 
         ResponseEntity<?> newTeamsResponse = controller.createTeam(teamDto);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
+                     newTeamsResponse.getStatusCode());
+        assertNull(newTeamsResponse.getBody());
+    }
+
+    @Test
+    void findTeamByNumber() {
+        TeamDto teamDto = TeamDto
+                .builder()
+                .key("frc5684")
+                .teamNumber(5684)
+                .nickname("Iron Mech")
+                .name("Lockheed Martin/2015 FRC Rookie Grant/Picatinny Arsenal/Mission Solutions LLC/Tuchman Foundation&Trenton Catholic Academy-Upper")
+                .school_name("Trenton Catholic Academy-Upper")
+                .city("Trenton")
+                .state_prov("New Jersey")
+                .country("USA")
+                .postal_code("08610")
+                .website("https://trentoncatholic.org/robotics")
+                .rookie_year(2015)
+                .build();
+
+        when(service.getByTeamNumber(5684)).thenReturn(Optional.of(teamDto));
+
+
+        ResponseEntity<?> newTeamsResponse = controller.findTeamByNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.OK,
+                     newTeamsResponse.getStatusCode());
+        Object body = newTeamsResponse.getBody();
+        assertNotNull(body);
+        assertEquals(body,
+                     teamDto);
+    }
+
+    @Test
+    void findTeamByNumberNoTeam() {
+        when(service.getByTeamNumber(5684)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> newTeamsResponse = controller.findTeamByNumber(5684);
+        assertNotNull(newTeamsResponse);
+        assertEquals(HttpStatus.NO_CONTENT,
+                     newTeamsResponse.getStatusCode());
+        Object body = newTeamsResponse.getBody();
+        assertNull(body);
+    }
+
+    @Test
+    void findTeamByNumberError() {
+
+        when(service.getByTeamNumber(5684)).thenThrow(new NumberFormatException());
+
+        ResponseEntity<?> newTeamsResponse = controller.findTeamByNumber(5684);
         assertNotNull(newTeamsResponse);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,
                      newTeamsResponse.getStatusCode());
